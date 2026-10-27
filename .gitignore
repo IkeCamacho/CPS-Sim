@@ -1,1 +1,4 @@
-.env
+context_logs/
+__pycache__/
+*.pyc
+.envgit ls-files | grep pycache
