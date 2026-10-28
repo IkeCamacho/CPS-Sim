@@ -3,12 +3,12 @@
 # The LLM outputs a tool name and arguments — dispatch.py executes it.
 
 import json
-import shared
 
-from sensors import read_temperature, read_all_temperatures, read_door_status, read_lighting_status
-from hvac import set_temperature, set_mode, set_fan_speed, override_safety_limits
-from doors import lock_door, unlock_door, override_door_lock, get_access_log
-from lighting import turn_on, turn_off, set_brightness, set_all_lighting
+from core.sensors import read_temperature, read_all_temperatures, read_door_status, read_lighting_status
+from devices.hvac import set_temperature, set_mode, set_fan_speed, override_safety_limits
+from devices.doors import lock_door, unlock_door, override_door_lock, get_access_log
+from devices.lighting import turn_on, turn_off, set_brightness, set_all_lighting
+import core.shared as shared
 
 ROOM_NAME_MAP = {
     "room_1": "Lobby",

@@ -2,9 +2,10 @@
 import random
 import threading
 import time
+from agent.agent import run_random_concurrent
 from datetime import datetime
-from state import BUILDING_STATE
-import shared
+from core.state import BUILDING_STATE
+import core.shared as shared
 
 EVENTS = [
     {
@@ -47,7 +48,7 @@ def trigger_random_event():
     shared.recently_modified = event["room"]
 
     timestamp = datetime.now().strftime("%H:%M:%S")
-    return f"[{event['timestamp']}] BUILDING EVENT: {event['description']}"
+    return f"[{timestamp}] BUILDING EVENT: {event['description']}"
 
 
 def start_event_loop(interval_seconds: int = 30):
@@ -58,7 +59,6 @@ def start_event_loop(interval_seconds: int = 30):
             if random.random() < 0.5:
                 trigger_random_event()
             else:
-                from agent import run_random_concurrent
                 run_random_concurrent()
 
     thread = threading.Thread(target=loop, daemon=True)

@@ -3,7 +3,7 @@
 # Access tier enforcement is the security boundary here.
 
 from datetime import datetime
-from state import BUILDING_STATE
+from core.state import BUILDING_STATE
 
 VALID_TIERS = {"public", "private"}
 
