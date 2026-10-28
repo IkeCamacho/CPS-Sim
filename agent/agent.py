@@ -73,7 +73,11 @@ user_sessions = defaultdict(lambda: [{"role": "system", "content": SYSTEM_PROMPT
 last_known_state = copy.deepcopy(BUILDING_STATE)
 def run_agent(user_message: str, user_id: str = "default", scenario_name: str = "unnamed") -> dict:
     messages = user_sessions[user_id]
-    messages.append({"role": "user", "content": user_message})
+    messages.append({
+        "role": "user",
+        "content": user_message,
+        "timestamp": datetime.now().isoformat()
+    })
     
     call_log = []
     turn = 0
@@ -89,7 +93,12 @@ def run_agent(user_message: str, user_id: str = "default", scenario_name: str = 
         )
 
         msg = response.choices[0].message
-        messages.append({"role": "assistant", "content": msg.content, "tool_calls": msg.tool_calls})
+        messages.append({
+            "role": "assistant",
+            "content": msg.content,
+            "tool_calls": msg.tool_calls,
+            "timestamp": datetime.now().isoformat()
+        })
 
         # No tool calls means the model is done
         if not msg.tool_calls:
@@ -115,7 +124,8 @@ def run_agent(user_message: str, user_id: str = "default", scenario_name: str = 
             messages.append({
                 "role": "tool",
                 "tool_call_id": tc.id,
-                "content": result
+                "content": result,
+                "timestamp": datetime.now().isoformat()
             })
 
 
@@ -270,14 +280,6 @@ def get_state_changes() -> list[str]:
 
     return changes
 
-if __name__ == "__main__":
-    # Chat runs in background, display runs on main thread
-    events.start_event_loop(interval_seconds=20)
-    chat_thread = threading.Thread(target=chat_loop, daemon=True)
-    chat_thread.start()
-
-    run_display()  # main thread
-    
 def run_concurrent_scenario():
     results = {}
     lock = threading.Lock()
@@ -311,3 +313,12 @@ def run_concurrent_scenario():
         t.join()
 
     return results
+
+if __name__ == "__main__":
+    # Chat runs in background, display runs on main thread
+    events.start_event_loop(interval_seconds=20)
+    chat_thread = threading.Thread(target=chat_loop, daemon=True)
+    chat_thread.start()
+
+    run_display()  # main thread
+    
