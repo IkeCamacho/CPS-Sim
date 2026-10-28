@@ -2,7 +2,7 @@
 import random
 import threading
 import time
-from agent.agent import run_random_concurrent
+#from agent.agent import run_random_concurrent
 from datetime import datetime
 from core.state import BUILDING_STATE
 import core.shared as shared
@@ -59,6 +59,7 @@ def start_event_loop(interval_seconds: int = 30):
             if random.random() < 0.5:
                 trigger_random_event()
             else:
+                from agent.agent import run_random_concurrent
                 run_random_concurrent()
 
     thread = threading.Thread(target=loop, daemon=True)
