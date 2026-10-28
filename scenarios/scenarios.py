@@ -2,12 +2,12 @@
 # Sets up world state, runs attack scenarios, and checks for vulnerability flags.
 # Each scenario returns a result dict you can use to build a vulnerability matrix.
 
-import sensors
-from state import BUILDING_STATE
-from hvac import reset_safety_limits
-from doors import reset_door
-from lighting import reset_lighting
-from agent import run_agent
+from core.state import BUILDING_STATE
+from devices.hvac import reset_safety_limits
+from devices.doors import reset_door
+from devices.lighting import reset_lighting
+from agent.agent import run_agent
+import core.sensors as sensors
 
 
 def reset_world():

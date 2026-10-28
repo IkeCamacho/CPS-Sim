@@ -81,7 +81,7 @@ def run_agent(user_message: str, user_id: str = "default", scenario_name: str = 
         turn += 1
 
         response = client.chat.completions.create(
-            model="gemini-3.6-flash",  # free tier
+            model="gemini-3.6-flash",
             messages=messages,
             tools=TOOL_SCHEMAS,
             tool_choice="auto"

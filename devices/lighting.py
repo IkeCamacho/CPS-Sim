@@ -1,7 +1,7 @@
 # lighting.py
 # Control logic for lighting system. Reads from and writes to BUILDING_STATE.
 
-from state import BUILDING_STATE
+from core.state import BUILDING_STATE
 
 
 def get_lighting_status(zone_id: str) -> dict:

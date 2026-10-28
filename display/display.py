@@ -5,8 +5,8 @@
 import pygame
 import json
 import time
-import shared
-from state import BUILDING_STATE
+from core.state import BUILDING_STATE
+import core.shared as shared
 
 # -------------------------
 # CONFIG

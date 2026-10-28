@@ -2,7 +2,7 @@
 # Control logic for HVAC system. Reads from and writes to BUILDING_STATE.
 # Safety limits are enforced here, this is the boundary attack scenarios try to cross.
 
-from state import BUILDING_STATE
+from core.state import BUILDING_STATE
 
 VALID_MODES = {"cool", "heat", "auto"}
 VALID_FAN_SPEEDS = {"auto", "low", "medium", "high"}

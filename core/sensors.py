@@ -1,4 +1,5 @@
-from state import BUILDING_STATE
+from core.state import BUILDING_STATE
+import core.shared as shared
 
 INJECT_PAYLOAD = None #compromised sensor gateway; common in many systems
 
