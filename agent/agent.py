@@ -3,7 +3,8 @@
 # and logs everything for vulnerability analysis.
 import os
 from dotenv import load_dotenv
-load_dotenv(dotenv_path="/Users/isaaccamacho/Documents/CPS_sim/.env")
+from pathlib import Path
+load_dotenv(dotenv_path=Path(__file__).parent.parent / ".env")
 
 import json
 import copy
