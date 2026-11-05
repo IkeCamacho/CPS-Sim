@@ -3,6 +3,24 @@
 
 from core.state import BUILDING_STATE
 
+try:
+    import RPi.GPIO as GPIO
+    GPIO_AVAILABLE = True
+    
+    LIGHT_PINS = {
+        "lobby": 17,
+        "server_room": 27,
+        "office": 22
+    }
+    
+    GPIO.setmode(GPIO.BCM)
+    for pin in LIGHT_PINS.values():
+        GPIO.setup(pin, GPIO.OUT)
+
+except ImportError:
+    GPIO_AVAILABLE = False
+    LIGHT_PINS = {}
+
 
 def get_lighting_status(zone_id: str) -> dict:
     if zone_id not in BUILDING_STATE["lights"]:
@@ -21,6 +39,9 @@ def turn_on(zone_id: str) -> dict:
     if zone_id not in BUILDING_STATE["lights"]:
         return {"error": f"Zone '{zone_id}' not found"}
 
+    if GPIO_AVAILABLE and zone_id in LIGHT_PINS:
+        GPIO.output(LIGHT_PINS[zone_id], GPIO.HIGH)
+
     BUILDING_STATE["lights"][zone_id]["on"] = True
     return {"success": True, "zone_id": zone_id, "status": "on"}
 
@@ -28,6 +49,9 @@ def turn_on(zone_id: str) -> dict:
 def turn_off(zone_id: str) -> dict:
     if zone_id not in BUILDING_STATE["lights"]:
         return {"error": f"Zone '{zone_id}' not found"}
+
+    if GPIO_AVAILABLE and zone_id in LIGHT_PINS:
+        GPIO.output(LIGHT_PINS[zone_id], GPIO.LOW)
 
     BUILDING_STATE["lights"][zone_id]["on"] = False
     return {"success": True, "zone_id": zone_id, "status": "off"}
@@ -42,7 +66,10 @@ def set_brightness(zone_id: str, brightness: int) -> dict:
 
     light = BUILDING_STATE["lights"][zone_id]
     light["brightness"] = brightness
-    light["on"] = brightness > 0  # automatically turns off if set to 0
+    light["on"] = brightness > 0
+
+    if GPIO_AVAILABLE and zone_id in LIGHT_PINS:
+        GPIO.output(LIGHT_PINS[zone_id], GPIO.HIGH if brightness > 0 else GPIO.LOW)
 
     return {
         "success": True,
@@ -53,11 +80,13 @@ def set_brightness(zone_id: str, brightness: int) -> dict:
 
 
 def set_all_lighting(on: bool) -> dict:
-    #toggle all lights on or off - vulnerability in place
     for zone_id in BUILDING_STATE["lights"]:
         BUILDING_STATE["lights"][zone_id]["on"] = on
         if not on:
             BUILDING_STATE["lights"][zone_id]["brightness"] = 0
+
+        if GPIO_AVAILABLE and zone_id in LIGHT_PINS:
+            GPIO.output(LIGHT_PINS[zone_id], GPIO.HIGH if on else GPIO.LOW)
 
     return {
         "success": True,
@@ -68,11 +97,13 @@ def set_all_lighting(on: bool) -> dict:
 
 
 def reset_lighting() -> dict:
-    #restore lights to default state
     defaults = {"lobby": 80, "server_room": 80, "office": 80}
 
     for zone_id, brightness in defaults.items():
         BUILDING_STATE["lights"][zone_id]["on"] = True
         BUILDING_STATE["lights"][zone_id]["brightness"] = brightness
+
+        if GPIO_AVAILABLE and zone_id in LIGHT_PINS:
+            GPIO.output(LIGHT_PINS[zone_id], GPIO.HIGH)
 
     return {"success": True, "status": "all zones restored to defaults"}

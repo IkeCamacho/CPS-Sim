@@ -59,7 +59,7 @@ async def handle_client(websocket):
 async def main():
     print("Building Management WebSocket Server")
     print("Listening on ws://localhost:8765\n")
-    async with websockets.serve(handle_client, "localhost", 8765):
+    async with websockets.serve(handle_client, "0.0.0.0", 8765):
         await asyncio.Future()  # run forever
 
 
